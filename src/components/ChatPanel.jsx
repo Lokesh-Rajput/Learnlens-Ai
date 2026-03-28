@@ -14,8 +14,16 @@ export default function ChatPanel({ diagnosisContext }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [speechSupported, setSpeechSupported] = useState(true);
+  const [isSpeakingEnabled, setIsSpeakingEnabled] = useState(true);
+  const isSpeakingEnabledRef = useRef(isSpeakingEnabled); // Ref to avoid closure stales
+  
   const chatEndRef = useRef(null);
   const inputRef = useRef(null);
+  const recognitionRef = useRef(null);
+  const transcriptRef = useRef(""); // Track current spoken string for auto-send
+  const sendMessageRef = useRef(null); // Ref for the latest sendMessage closure
 
   const rootCause = diagnosisContext?.rootCause?.concept || "the weak concept";
 
@@ -30,6 +38,90 @@ export default function ChatPanel({ diagnosisContext }) {
     setMessages([{ role: "assistant", content: greeting }]);
   }, []);
 
+  // Initialize Speech Recognition
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false; // Stop automatically when user stops speaking
+      recognition.interimResults = true;
+
+      recognition.onresult = (event) => {
+        const transcript = Array.from(event.results)
+          .map(result => result[0])
+          .map(result => result.transcript)
+          .join("");
+        setInput(transcript);
+        transcriptRef.current = transcript; // Constantly update ref
+      };
+
+      recognition.onerror = (event) => {
+        console.error("Speech recognition error", event.error);
+        setIsListening(false);
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+        // Automatically send message when voice stops decoding
+        if (transcriptRef.current?.trim()) {
+           sendMessageRef.current?.(transcriptRef.current);
+           transcriptRef.current = ""; // Reset after dispatch
+        }
+      };
+
+      recognitionRef.current = recognition;
+    } else {
+      setSpeechSupported(false);
+    }
+  }, []);
+
+  const toggleListening = () => {
+    if (isListening) {
+      recognitionRef.current?.stop();
+    } else {
+      setInput(""); 
+      recognitionRef.current?.start();
+      setIsListening(true);
+    }
+  };
+
+  const toggleSpeaker = () => {
+    const nextState = !isSpeakingEnabled;
+    setIsSpeakingEnabled(nextState);
+    isSpeakingEnabledRef.current = nextState;
+    
+    // Immediately stop talking if the user just toggled it OFF
+    if (!nextState && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+  };
+
+  const speakText = (text) => {
+    if (!("speechSynthesis" in window)) return;
+    
+    window.speechSynthesis.cancel(); // Cancel any ongoing speech
+    if (!isSpeakingEnabledRef.current) return; // Prevent if disabled
+
+    // Strip basic markdown syntax so the voice doesn't read special characters out loud
+    let cleanText = text.replace(/\*\*(.*?)\*\*/g, '$1')
+                        .replace(/\*(.*?)\*/g, '$1')
+                        .replace(/#(.*?)\n/g, '$1\n')
+                        .replace(/[•`-]/g, '');
+
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.rate = 1.0;
+    window.speechSynthesis.speak(utterance);
+  };
+
+  // Cleanup speech synthesis on component unmount
+  useEffect(() => {
+    return () => {
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
   const sendMessage = async (text) => {
     if (!text.trim() || loading) return;
 
@@ -42,16 +134,26 @@ export default function ChatPanel({ diagnosisContext }) {
       const chatHistory = messages.map(m => ({ role: m.role, content: m.content }));
       const response = await chatWithTutor(text.trim(), diagnosisContext, chatHistory);
       setMessages(prev => [...prev, { role: "assistant", content: response }]);
+      
+      // Attempt to read the AI's response aloud
+      speakText(response);
+      
     } catch (err) {
       setMessages(prev => [...prev, {
         role: "assistant",
         content: "Sorry, I couldn't process that. Please try again. 🔄",
       }]);
+      speakText("Sorry, I couldn't process that. Please try again.");
     } finally {
       setLoading(false);
       inputRef.current?.focus();
     }
   };
+
+  // Keep sendMessageRef updated so onend closure always has the latest messages array closure
+  useEffect(() => {
+    sendMessageRef.current = sendMessage;
+  }, [sendMessage]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -123,6 +225,45 @@ export default function ChatPanel({ diagnosisContext }) {
           disabled={loading}
           id="chat-input"
         />
+        
+        {speechSupported && (
+          <button
+            type="button"
+            className={`cp-mic-btn ${isListening ? "listening" : ""}`}
+            onClick={toggleListening}
+            disabled={loading}
+            title="Use Voice Input"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+              <line x1="12" y1="19" x2="12" y2="23"></line>
+              <line x1="8" y1="23" x2="16" y2="23"></line>
+            </svg>
+          </button>
+        )}
+
+        {/* Text-to-Speech Toggle Button */}
+        <button
+          type="button"
+          className={`cp-speaker-btn ${isSpeakingEnabled ? "active" : ""}`}
+          onClick={toggleSpeaker}
+          title={isSpeakingEnabled ? "Mute Voice Output" : "Enable Voice Output"}
+        >
+          {isSpeakingEnabled ? (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            </svg>
+          ) : (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <line x1="23" y1="9" x2="17" y2="15"></line>
+              <line x1="17" y1="9" x2="23" y2="15"></line>
+            </svg>
+          )}
+        </button>
+
         <button
           type="submit"
           className="cp-send-btn"
