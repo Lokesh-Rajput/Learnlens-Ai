@@ -1,0 +1,132 @@
+/* BrainVisual.css — Futuristic Neural Brain */
+
+.brain-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Ambient glow rings behind the SVG */
+.brain-glow-ring {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.brain-glow-ring-1 {
+  width: 420px;
+  height: 420px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle,
+    rgba(255,106,0,0.1) 0%,
+    rgba(255,106,0,0.04) 40%,
+    transparent 70%);
+  animation: orangePulse 4s ease-in-out infinite;
+}
+.brain-glow-ring-2 {
+  width: 280px;
+  height: 280px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -52%);
+  background: radial-gradient(circle,
+    rgba(255,180,71,0.08) 0%,
+    transparent 70%);
+  animation: orangePulse 6s ease-in-out infinite reverse;
+}
+
+/* Main SVG */
+.brain-svg {
+  width: 100%;
+  height: 100%;
+  max-width: 520px;
+  max-height: 460px;
+  animation: float 8s ease-in-out infinite;
+  filter: drop-shadow(0 0 30px rgba(255,106,0,0.12));
+}
+
+/* ── HUD Corner Decorations ── */
+.brain-hud {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.brain-hud-tl { top: 16px; left: 16px; }
+.brain-hud-tr { top: 16px; right: 16px; flex-direction: row-reverse; }
+.brain-hud-br { bottom: 16px; right: 16px; flex-direction: column-reverse; }
+
+.brain-hud-line {
+  display: block;
+  flex: 1;
+  height: 1px;
+  background: rgba(255,106,0,0.4);
+  border-radius: 999px;
+  animation: blink 3s ease-in-out infinite;
+}
+.brain-hud-line-vert {
+  width: 1px;
+  height: 100%;
+  flex: 1;
+}
+.brain-hud-dot {
+  display: block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #ff6a00;
+  box-shadow: 0 0 8px rgba(255,106,0,0.8);
+  flex-shrink: 0;
+  animation: blink 2s ease-in-out infinite;
+}
+
+/* Corner L-shaped borders */
+.brain-hud-tl::before, .brain-hud-tr::before {
+  content: '';
+  position: absolute;
+  top: 0; 
+  width: 1px; height: 28px;
+  background: rgba(255,106,0,0.35);
+}
+.brain-hud-tl::before { left: 0; }
+.brain-hud-tr::before { right: 0; }
+.brain-hud-tl::after, .brain-hud-tr::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  height: 1px; width: 28px;
+  background: rgba(255,106,0,0.35);
+}
+.brain-hud-tl::after { left: 0; }
+.brain-hud-tr::after { right: 0; }
+
+/* ── Status bar ── */
+.brain-status {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: rgba(255,106,0,0.55);
+  white-space: nowrap;
+  font-family: 'Inter', monospace;
+}
+.brain-status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #ff6a00;
+  box-shadow: 0 0 6px rgba(255,106,0,0.8);
+  animation: blink 1.5s ease-in-out infinite;
+}

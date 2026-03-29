@@ -1,302 +1,134 @@
-/* ============================================================
-   ChatPanel.css — AI Tutor Chat Interface
-   ============================================================ */
+/* ChatPanel.css — macOS floating widget */
 
 .cp-container {
-  background: #1a1a1a;
-  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-glass);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
   border-radius: 20px;
-  display: flex;
-  flex-direction: column;
-  height: 500px;
   overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+  display: flex; flex-direction: column;
+  max-height: 600px;
 }
 
+/* Header */
 .cp-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  flex-shrink: 0;
+  display: flex; align-items: center; gap: 14px;
+  padding: 18px 20px;
+  background: rgba(255,255,255,0.025);
+  border-bottom: 1px solid var(--border-glass);
 }
-
 .cp-header-icon {
-  font-size: 24px;
+  width: 40px; height: 40px; border-radius: 12px;
+  background: linear-gradient(135deg, rgba(10,132,255,0.2), rgba(191,90,242,0.2));
+  border: 1px solid rgba(10,132,255,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
 }
-
-.cp-header-title {
-  font-size: 15px;
-  font-weight: 700;
-  color: #f0f0f0;
+.cp-header-title { font-size: 15px; font-weight: 700; color: var(--text-primary); margin: 0; }
+.cp-header-sub { font-size: 12px; color: var(--text-tertiary); margin: 0; }
+.cp-header-status {
+  margin-left: auto; display: flex; align-items: center; gap: 6px;
+  font-size: 11px; color: var(--accent-green); font-weight: 600;
 }
-
-.cp-header-sub {
-  font-size: 12px;
-  color: #6b7280;
+.cp-status-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--accent-green);
+  box-shadow: 0 0 6px var(--accent-green);
 }
 
 /* Messages */
 .cp-messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  flex: 1; overflow-y: auto; padding: 20px;
+  display: flex; flex-direction: column; gap: 14px;
+  min-height: 0;
 }
 
-.cp-messages::-webkit-scrollbar {
-  width: 4px;
-}
-
-.cp-messages::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.cp-messages::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.1);
-  border-radius: 4px;
-}
-
-.cp-msg {
-  display: flex;
-  gap: 10px;
-  max-width: 90%;
-  animation: msgIn 0.3s ease both;
-}
-
-@keyframes msgIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.cp-msg-user {
-  align-self: flex-end;
-  flex-direction: row-reverse;
-}
-
-.cp-msg-assistant {
-  align-self: flex-start;
-}
+.cp-msg { display: flex; gap: 10px; align-items: flex-end; animation: fadeInUp 0.3s ease; }
+.cp-msg-assistant { justify-content: flex-start; }
+.cp-msg-user { justify-content: flex-end; flex-direction: row-reverse; }
 
 .cp-msg-avatar {
-  width: 30px;
-  height: 30px;
-  border-radius: 10px;
-  background: rgba(192,132,252,0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  flex-shrink: 0;
+  width: 30px; height: 30px; border-radius: 10px;
+  background: linear-gradient(135deg, rgba(10,132,255,0.2), rgba(191,90,242,0.2));
+  border: 1px solid rgba(10,132,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
 }
 
-.cp-msg-bubble {
-  padding: 12px 16px;
-  border-radius: 16px;
-  font-size: 13.5px;
-  line-height: 1.6;
-}
-
-.cp-msg-user .cp-msg-bubble {
-  background: #c084fc;
-  color: #0d0d0d;
-  border-bottom-right-radius: 4px;
-}
-
+.cp-msg-bubble { max-width: 80%; }
 .cp-msg-assistant .cp-msg-bubble {
-  background: #252525;
-  color: #d1d5db;
-  border-bottom-left-radius: 4px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border-glass);
+  border-radius: 4px 18px 18px 18px;
 }
-
-.cp-msg-content p {
-  margin-bottom: 6px;
+.cp-msg-user .cp-msg-bubble {
+  background: rgba(10,132,255,0.15);
+  border: 1px solid rgba(10,132,255,0.2);
+  border-radius: 18px 18px 4px 18px;
 }
-
-.cp-msg-content p:last-child {
-  margin-bottom: 0;
-}
-
-.cp-bold {
-  font-weight: 700;
-  color: #f0f0f0;
-}
-
-.cp-list-item {
-  padding-left: 8px;
-}
+.cp-msg-content { padding: 12px 16px; }
+.cp-msg-content p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin: 0 0 4px; }
+.cp-msg-content p:last-child { margin-bottom: 0; }
+.cp-msg-user .cp-msg-content p { color: var(--text-primary); }
+.cp-bold { font-weight: 700 !important; color: var(--text-primary) !important; }
+.cp-list-item { padding-left: 8px !important; color: var(--text-secondary); }
 
 /* Typing indicator */
 .cp-typing {
-  display: flex;
-  gap: 4px;
-  padding: 4px 0;
+  display: flex; align-items: center; gap: 4px; padding: 14px 16px;
 }
-
 .cp-typing span {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #6b7280;
-  animation: typingBounce 1.4s ease-in-out infinite;
+  width: 6px; height: 6px; border-radius: 50%; background: var(--text-tertiary);
+  animation: dot-bounce 1.4s ease-in-out infinite;
 }
-
 .cp-typing span:nth-child(2) { animation-delay: 0.2s; }
 .cp-typing span:nth-child(3) { animation-delay: 0.4s; }
 
-@keyframes typingBounce {
-  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-  30% { transform: translateY(-6px); opacity: 1; }
-}
-
 /* Suggestions */
-.cp-suggestions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  padding: 0 16px 12px;
-  flex-shrink: 0;
-}
-
+.cp-suggestions { padding: 0 16px 12px; display: flex; flex-wrap: wrap; gap: 8px; }
 .cp-suggestion-btn {
-  padding: 6px 12px;
-  background: rgba(192,132,252,0.08);
-  border: 1px solid rgba(192,132,252,0.2);
-  border-radius: 20px;
-  color: #c084fc;
-  font-size: 11.5px;
-  font-weight: 500;
-  cursor: pointer;
-  font-family: 'Inter', sans-serif;
-  transition: all 0.2s;
-  white-space: nowrap;
+  padding: 7px 14px; border-radius: 999px;
+  background: rgba(10,132,255,0.08); border: 1px solid rgba(10,132,255,0.15);
+  color: var(--accent-blue); font-size: 12px; font-weight: 500; cursor: pointer; font-family: inherit;
+  transition: all 0.2s; white-space: nowrap;
 }
-
 .cp-suggestion-btn:hover {
-  background: rgba(192,132,252,0.15);
-  border-color: #c084fc;
+  background: rgba(10,132,255,0.15); border-color: rgba(10,132,255,0.3);
+  transform: translateY(-1px);
 }
 
 /* Input */
 .cp-input-form {
-  display: flex;
-  gap: 8px;
-  padding: 12px 16px;
-  border-top: 1px solid rgba(255,255,255,0.06);
-  flex-shrink: 0;
+  display: flex; gap: 8px; align-items: center;
+  padding: 14px 16px;
+  background: rgba(255,255,255,0.025);
+  border-top: 1px solid var(--border-glass);
 }
-
 .cp-input {
-  flex: 1;
-  padding: 10px 16px;
-  background: #252525;
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 12px;
-  color: #e5e7eb;
-  font-size: 13.5px;
-  font-family: 'Inter', sans-serif;
-  outline: none;
-  transition: border-color 0.2s;
+  flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--border-glass);
+  border-radius: 12px; color: var(--text-primary); font-family: inherit; font-size: 14px;
+  padding: 10px 14px; outline: none; transition: all 0.2s;
 }
+.cp-input:focus { border-color: var(--accent-blue); background: rgba(255,255,255,0.07); }
+.cp-input::placeholder { color: var(--text-tertiary); }
+.cp-input:disabled { opacity: 0.5; }
 
-.cp-input::placeholder {
-  color: #4b5563;
+.cp-mic-btn, .cp-speaker-btn {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: rgba(255,255,255,0.07); border: 1px solid var(--border-glass);
+  color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; flex-shrink: 0;
 }
-
-.cp-input:focus {
-  border-color: rgba(192,132,252,0.4);
-}
+.cp-mic-btn:hover, .cp-speaker-btn:hover { background: rgba(255,255,255,0.12); color: var(--text-primary); }
+.cp-mic-btn.listening { background: rgba(255,69,58,0.15); border-color: rgba(255,69,58,0.3); color: #FF453A; animation: pulse-ring 1s ease-in-out infinite; }
+.cp-speaker-btn.active { background: rgba(10,132,255,0.1); border-color: rgba(10,132,255,0.3); color: var(--accent-blue); }
 
 .cp-send-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: #c084fc;
-  border: none;
-  color: #0d0d0d;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.15s, opacity 0.2s;
-  flex-shrink: 0;
+  width: 36px; height: 36px; border-radius: 10px;
+  background: var(--accent-blue); border: none;
+  color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; flex-shrink: 0;
 }
-
-.cp-send-btn:hover:not(:disabled) {
-  transform: translateY(-1px);
-}
-
-.cp-send-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-/* Microphone Button */
-.cp-mic-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: #252525;
-  border: 1px solid rgba(255,255,255,0.08);
-  color: #e5e7eb;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-  flex-shrink: 0;
-}
-
-.cp-mic-btn:hover:not(:disabled) {
-  background: rgba(192,132,252,0.1);
-  border-color: rgba(192,132,252,0.4);
-  color: #c084fc;
-}
-
-.cp-mic-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.cp-mic-btn.listening {
-  background: rgba(239, 68, 68, 0.15); /* Red tint */
-  border-color: #ef4444;
-  color: #ef4444;
-  animation: micPulse 1.5s infinite;
-}
-
-@keyframes micPulse {
-  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-  70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-}
-
-/* Speaker Button */
-.cp-speaker-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: #252525;
-  border: 1px solid rgba(255,255,255,0.08);
-  color: #6b7280;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-  flex-shrink: 0;
-}
-
-.cp-speaker-btn:hover {
-  background: rgba(192,132,252,0.1);
-  border-color: rgba(192,132,252,0.4);
-  color: #c084fc;
-}
-
-.cp-speaker-btn.active {
-  background: rgba(34, 197, 94, 0.15); /* Green tint */
-  border-color: #22c55e;
-  color: #22c55e;
-}
+.cp-send-btn:hover:not(:disabled) { transform: scale(1.07); box-shadow: 0 4px 16px rgba(10,132,255,0.5); }
+.cp-send-btn:disabled { opacity: 0.4; cursor: not-allowed; }

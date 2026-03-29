@@ -6,33 +6,35 @@ import SubjectSelection from "./components/SubjectSelection";
 import QuizPage from "./components/QuizPage";
 import ResultDashboard from "./components/ResultDashboard";
 
+const LoadingScreen = () => (
+  <div style={{
+    minHeight: "100vh", display: "flex", flexDirection: "column",
+    alignItems: "center", justifyContent: "center",
+    background: "#0a0a0a", gap: "20px",
+    fontFamily: "'Inter', -apple-system, sans-serif",
+  }}>
+    <div style={{
+      width: 52, height: 52, borderRadius: "50%",
+      border: "2.5px solid rgba(255,106,0,0.12)",
+      borderTopColor: "#ff6a00",
+      animation: "spin 0.8s linear infinite",
+    }} />
+    <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+    <span style={{ fontSize: 14, color: "#636366", fontWeight: 500, letterSpacing: "0.02em" }}>
+      LearnLens AI
+    </span>
+  </div>
+);
+
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div style={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "#0d0d0d",
-        color: "#c084fc",
-        fontFamily: "'Inter', sans-serif",
-        fontSize: "16px",
-        fontWeight: 600,
-      }}>
-        Loading...
-      </div>
-    );
-  }
-
+  if (loading) return <LoadingScreen />;
   return user ? children : <Navigate to="/login" replace />;
 }
 
 function AuthRoute({ children }) {
   const { user, loading } = useAuth();
-  if (loading) return null;
+  if (loading) return <LoadingScreen />;
   return user ? <Navigate to="/" replace /> : children;
 }
 

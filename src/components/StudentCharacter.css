@@ -1,0 +1,110 @@
+/* StudentCharacter.css — Apple Memoji Anime Student */
+
+.sc-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.sc-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.12s ease-out;
+}
+
+.sc-svg {
+  width: 100%;
+  height: 100%;
+  max-width: 480px;
+  max-height: 520px;
+  animation: float 7s ease-in-out infinite;
+  filter:
+    drop-shadow(0 24px 48px rgba(0,0,0,0.5))
+    drop-shadow(0 0 60px rgba(255,106,0,0.08));
+}
+
+/* Ambient glow orb */
+.sc-ambient {
+  position: absolute;
+  width: 380px;
+  height: 380px;
+  top: 50%; left: 50%;
+  margin-top: -190px;
+  margin-left: -190px;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    rgba(255, 106, 0, 0.09) 0%,
+    rgba(255, 106, 0, 0.03) 50%,
+    transparent 70%);
+  pointer-events: none;
+  animation: orangePulse 5s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* ── HUD Corner Brackets ── */
+.sc-hud {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+}
+.sc-hud::before,
+.sc-hud::after {
+  content: '';
+  position: absolute;
+  background: rgba(255, 106, 0, 0.5);
+  border-radius: 1px;
+  animation: blink 3s ease-in-out infinite;
+}
+.sc-hud::before { width: 2px; height: 100%; }
+.sc-hud::after  { width: 100%; height: 2px; }
+
+.sc-hud-tl { top: 14px; left: 14px; }
+.sc-hud-tl::before, .sc-hud-tl::after { top: 0; left: 0; }
+
+.sc-hud-tr { top: 14px; right: 14px; }
+.sc-hud-tr::before { top: 0; right: 0; left: auto; }
+.sc-hud-tr::after  { top: 0; right: 0; left: auto; }
+
+.sc-hud-br { bottom: 14px; right: 14px; }
+.sc-hud-br::before { bottom: 0; top: auto; right: 0; left: auto; }
+.sc-hud-br::after  { bottom: 0; top: auto; right: 0; left: auto; }
+
+.sc-hud-bl { bottom: 14px; left: 14px; }
+.sc-hud-bl::before { bottom: 0; top: auto; left: 0; }
+.sc-hud-bl::after  { bottom: 0; top: auto; left: 0; }
+
+/* ── Status bar ── */
+.sc-status {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: rgba(255, 106, 0, 0.45);
+  white-space: nowrap;
+  font-family: 'Inter', monospace;
+  pointer-events: none;
+}
+.sc-status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #ff6a00;
+  box-shadow: 0 0 8px rgba(255, 106, 0, 0.9);
+  animation: blink 1.6s ease-in-out infinite;
+}
