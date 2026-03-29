@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
-import StudentCharacter from "./StudentCharacter";
+import ConceptOrbit from "./ConceptOrbit";
 import "./SubjectSelection.css";
 
 const subjects = [
@@ -131,7 +131,7 @@ export default function SubjectSelection() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}>
           <div className="ss-spline-wrap">
-            <StudentCharacter />
+            <ConceptOrbit />
           </div>
         </motion.div>
       </section>

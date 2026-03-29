@@ -1,0 +1,74 @@
+/* ConceptOrbit.css — Futuristic 3D Concept Graph */
+
+.co-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.co-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s ease-out;
+}
+
+.co-svg {
+  width: 100%;
+  height: 100%;
+  max-width: 500px;
+  max-height: 480px;
+  filter:
+    drop-shadow(0 0 60px rgba(255,106,0,0.13))
+    drop-shadow(0 20px 40px rgba(0,0,0,0.4));
+  animation: float 10s ease-in-out infinite;
+}
+
+/* Pulsing ambient glow behind the graph */
+.co-ambient {
+  position: absolute;
+  width: 340px;
+  height: 340px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    rgba(255,106,0,0.07) 0%,
+    rgba(255,106,0,0.02) 50%,
+    transparent 70%);
+  pointer-events: none;
+  animation: orangePulse 6s ease-in-out infinite;
+}
+
+/* Status bar */
+.co-status {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: rgba(255,106,0,0.45);
+  white-space: nowrap;
+  font-family: 'Inter', monospace;
+  pointer-events: none;
+}
+.co-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #ff6a00;
+  box-shadow: 0 0 8px rgba(255,106,0,0.9);
+  animation: blink 1.6s ease-in-out infinite;
+}
